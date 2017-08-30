@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "登录";
+}
+@if (Context.User.Identity.IsAuthenticated)
+{
+    @Context.User.Identity.Name <a href="@Url.Action("SignOut","Login")">注销</a>
+}
+else
+{
+    <a class="btn btn-default" href="@Url.Action("SignIn","Login",new { returnUrl=Context.Request.Query["returnUrl"]})">登录</a>
+}
