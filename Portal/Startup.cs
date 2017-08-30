@@ -48,7 +48,6 @@ namespace Portal
 
             app.UseStaticFiles();
             app.UseAuthentication();
-            app.usea
 
             app.UseMvc(routes =>
             {
