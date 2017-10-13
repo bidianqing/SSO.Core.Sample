@@ -20,6 +20,7 @@ namespace Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 确保每个应用程序的此属性值都一样
             services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet");
             services.AddAuthentication(options =>
             {
