@@ -28,7 +28,7 @@ namespace Passport
                 options.Cookie.Domain = ".domain.dev";
                 options.Cookie.Name = "sso";
                 options.Cookie.Path = "/";
-                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"c:\shared-auth-ticket-keys\"));
+                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"c:\sso\passport\"));
             });
             services.AddMvc();
         }

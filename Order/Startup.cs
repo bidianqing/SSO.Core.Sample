@@ -35,7 +35,7 @@ namespace Order
                 options.Cookie.Name = "sso";
                 options.Cookie.Path = "/";
                 options.LoginPath = "/login";
-                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"c:\shared-auth-ticket-keys\"));
+                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(@"c:\sso\order\"));
             });
             // 不允许匿名访问
             services.AddMvc(options =>
