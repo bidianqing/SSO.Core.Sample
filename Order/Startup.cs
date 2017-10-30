@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.DataProtection;
-using System.IO;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using StackExchange.Redis;
 
 namespace Order
 {
@@ -26,8 +22,12 @@ namespace Order
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var redis = ConnectionMultiplexer.Connect("localhost:6379,password=sa");
             // 确保每个应用程序的此属性值都一样
-            services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet");
+            services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet")
+                .PersistKeysToRedis(redis, "DataProtection-Keys");
+                
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -37,7 +37,6 @@ namespace Order
                 options.Cookie.Name = "sso";
                 options.Cookie.Path = "/";
                 options.LoginPath = "/login";
-                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(Directory.GetCurrentDirectory()));
             });
             // 不允许匿名访问
             services.AddMvc(options =>

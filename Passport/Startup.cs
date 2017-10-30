@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
+using StackExchange.Redis;
 
 namespace Passport
 {
@@ -20,8 +20,12 @@ namespace Passport
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var redis = ConnectionMultiplexer.Connect("localhost:6379,password=sa");
             // 确保每个应用程序的此属性值都一样
-            services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet");
+            services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet")
+                .PersistKeysToRedis(redis, "DataProtection-Keys");
+                
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -30,7 +34,6 @@ namespace Passport
                 options.Cookie.Domain = ".domain.dev";
                 options.Cookie.Name = "sso";
                 options.Cookie.Path = "/";
-                options.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo(Directory.GetCurrentDirectory()));
             });
             services.AddMvc();
         }
