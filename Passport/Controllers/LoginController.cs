@@ -25,7 +25,7 @@ namespace Passport.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user, new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.Now.Add(TimeSpan.FromDays(180)),
+                ExpiresUtc = DateTimeOffset.Now.Add(TimeSpan.FromMinutes(10)),
             });
             if (string.IsNullOrWhiteSpace(returnUrl))
             {
