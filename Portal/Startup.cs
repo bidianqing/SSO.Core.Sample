@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -20,10 +21,10 @@ namespace Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var redis = ConnectionMultiplexer.Connect("localhost:6379,password=sa");
+            var redis = ConnectionMultiplexer.Connect("localhost:6379");
             // 确保每个应用程序的此属性值都一样
             services.AddDataProtection(options => options.ApplicationDiscriminator = "oneaspnet")
-                .PersistKeysToRedis(redis, "DataProtection-Keys");
+                .PersistKeysToRedis(redis, "onekey");
                 
 
             services.AddAuthentication(options =>
@@ -31,11 +32,12 @@ namespace Portal
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options => {
-                options.Cookie.Domain = ".domain.dev";
+                options.Cookie.Domain = ".domain.localhost";
                 options.Cookie.Name = "sso";
                 options.Cookie.Path = "/";
             });
-            services.AddMvc();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +46,6 @@ namespace Portal
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {

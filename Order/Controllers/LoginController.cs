@@ -8,7 +8,7 @@ namespace Order.Controllers
         [AllowAnonymous]
         public IActionResult Index(string returnUrl)
         {
-            return Redirect(string.Concat("http://passport.domain.dev/login?returnUrl=http://order.domain.dev", returnUrl));
+            return Redirect(string.Concat("http://passport.domain.localhost/login?returnUrl=http://order.domain.localhost", returnUrl));
         }
     }
 }
